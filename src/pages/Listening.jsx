@@ -36,8 +36,8 @@ export default function Listening() {
 
     window.open(
       currentExperience.external_player_url,
-      '_blank',
-      'noopener,noreferrer'
+      'pcloud-player',
+      'width=420,height=720,noopener,noreferrer'
     )
 
     setHasOpenedPlayer(true)
@@ -70,73 +70,65 @@ export default function Listening() {
         }}
       />
 
-      <div className="relative z-10 min-h-screen flex flex-col justify-between max-w-md mx-auto py-8">
-        <section>
-          <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
-            Étape 1 · Écoute
-          </p>
+      <div className="relative z-10 min-h-screen flex flex-col justify-center max-w-md mx-auto py-8">
+        <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3 text-center">
+          Étape 1 · Écoute
+        </p>
 
-          <h1 className="text-4xl font-thin mb-4 leading-tight">
-            {currentExperience.title}
-          </h1>
+        <h1 className="text-4xl font-thin mb-4 leading-tight text-center">
+          {currentExperience.title}
+        </h1>
 
-          <p className="text-slate-400 leading-relaxed">
-            {currentExperience.subtitle}
-          </p>
-        </section>
+        <p className="text-slate-400 leading-relaxed mb-10 text-center">
+          {currentExperience.subtitle}
+        </p>
 
-        <section className="flex flex-col items-center text-center">
+        <motion.div
+          animate={{
+            scale: [1, 1.06, 1],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+          }}
+          className="w-40 h-40 rounded-full border border-white/10 bg-white/5 flex items-center justify-center mx-auto mb-10 backdrop-blur-xl"
+        >
+          <div
+            className="w-24 h-24 rounded-full animate-pulse"
+            style={{
+              background: `${currentExperience.color || '#38bdf8'}44`,
+            }}
+          />
+        </motion.div>
+
+        <button
+          onClick={openPlayer}
+          className="w-full rounded-full p-5 bg-cyan-500/20 border border-cyan-400/30 text-cyan-200 backdrop-blur-xl mb-6 text-lg"
+        >
+          Ouvrir le lecteur d’écoute
+        </button>
+
+        {hasOpenedPlayer && (
           <motion.div
-            animate={{
-              scale: [1, 1.06, 1],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-            }}
-            className="w-44 h-44 rounded-full border border-white/10 bg-white/5 flex items-center justify-center mb-8 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl border border-cyan-400/20 bg-cyan-500/10 p-5 text-center"
           >
-            <div
-              className="w-24 h-24 rounded-full animate-pulse"
-              style={{
-                background: `${currentExperience.color || '#38bdf8'}44`,
-              }}
-            />
-          </motion.div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 mb-5 text-left">
-            <h2 className="text-xl mb-3 font-light">
-              Comment faire ?
-            </h2>
-
-            <ol className="text-slate-400 text-sm leading-7 list-decimal pl-5">
-              <li>Ouvre le lecteur pCloud dans un nouvel onglet.</li>
-              <li>Écoute le paysage sonore.</li>
-              <li>Reviens ici quand l’écoute est terminée.</li>
-              <li>Remplis ta boussole de résonance.</li>
-            </ol>
-          </div>
-
-          <button
-            onClick={openPlayer}
-            className="w-full rounded-full p-4 bg-cyan-500/20 border border-cyan-400/30 text-cyan-200 backdrop-blur-xl mb-4"
-          >
-            Ouvrir le lecteur d’écoute
-          </button>
-
-          {hasOpenedPlayer && (
-            <p className="text-xs text-slate-500 mb-4">
-              Le lecteur est ouvert dans un autre onglet. Reviens ici après l’écoute.
+            <p className="text-slate-300 mb-4 leading-relaxed">
+              Après l’écoute de{' '}
+              <span className="text-cyan-300">
+                {currentExperience.title}
+              </span>
             </p>
-          )}
 
-          <button
-            onClick={() => navigate('/compass')}
-            className="w-full rounded-full p-4 bg-white text-black font-medium"
-          >
-            Je suis revenu · remplir ma boussole
-          </button>
-        </section>
+            <button
+              onClick={() => navigate('/compass')}
+              className="w-full rounded-full p-5 bg-white text-black font-semibold text-base shadow-2xl"
+            >
+              🧭 Remplir ma boussole
+            </button>
+          </motion.div>
+        )}
       </div>
     </main>
   )
