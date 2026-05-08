@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAppStore } from '../../store/useAppStore'
 import { compassAxes } from '../../data/compassAxes'
 import SynthesisPreview from '../synthesis/SynthesisPreview'
+import WeavingBubbles from './WeavingBubbles'
 
 const axisColors = {
   north: '#4ade80',
@@ -255,74 +256,7 @@ export default function ExperiencePanel({ experience }) {
       {/* ================================================= */}
 
       <section className="mb-20">
-        <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
-          3 · Tissage
-        </p>
-
-        <h2 className="text-3xl font-light mb-4">
-          Relier mes résonances
-        </h2>
-
-        <p className="text-slate-400 mb-8">
-          Touchez deux mots pour créer une connexion.
-        </p>
-
-        {firstTag && (
-          <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/10 p-4 mb-6">
-            <p className="text-cyan-300">
-              Mot sélectionné : {firstTag.label}
-            </p>
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-3 mb-8">
-          {allTags.map((tag) => (
-            <button
-              key={`${tag.axis}-${tag.label}`}
-              onClick={() => connectTag(tag)}
-              className="rounded-full px-4 py-2 border transition-all"
-              style={{
-                color: axisColors[tag.axis],
-                borderColor: axisColors[tag.axis],
-                background:
-                  firstTag?.label === tag.label
-                    ? `${axisColors[tag.axis]}44`
-                    : `${axisColors[tag.axis]}18`,
-              }}
-            >
-              {tag.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-          {connections.length === 0 && (
-            <p className="text-slate-500">
-              Aucun lien créé.
-            </p>
-          )}
-
-          <div className="flex flex-col gap-3">
-            {connections.map((connection, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-white/10 bg-black/20 p-4"
-              >
-                <span className="text-cyan-300">
-                  {connection.from}
-                </span>
-
-                <span className="mx-3 text-slate-500">
-                  →
-                </span>
-
-                <span className="text-fuchsia-300">
-                  {connection.to}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeavingBubbles />
       </section>
 
       {/* ================================================= */}

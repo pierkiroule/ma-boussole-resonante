@@ -79,7 +79,13 @@ export default function Collective({ embedded = false }) {
   const Wrapper = embedded ? 'section' : 'main'
 
   return (
-    <Wrapper className={embedded ? 'p-6 pb-20' : 'min-h-screen bg-black text-white p-6'}>
+    <Wrapper
+      className={
+        embedded
+          ? 'p-6 pb-20'
+          : 'min-h-screen bg-black text-white p-6'
+      }
+    >
       <section className="max-w-md mx-auto">
         <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
           Synthèse collective
@@ -116,30 +122,10 @@ export default function Collective({ embedded = false }) {
             <circle
               cx={center}
               cy={center}
-              r="48"
+              r="34"
               fill="rgba(34,211,238,0.06)"
-              stroke="rgba(34,211,238,0.22)"
+              stroke="rgba(34,211,238,0.18)"
             />
-
-            <text
-              x={center}
-              y={center - 5}
-              textAnchor="middle"
-              fill="#67e8f9"
-              fontSize="11"
-            >
-              corps
-            </text>
-
-            <text
-              x={center}
-              y={center + 10}
-              textAnchor="middle"
-              fill="#67e8f9"
-              fontSize="11"
-            >
-              relationnel
-            </text>
 
             {visibleExperiences.map((exp, i) => {
               const pos = getExpPosition(i, visibleExperiences.length)
@@ -149,21 +135,22 @@ export default function Collective({ embedded = false }) {
                   <circle
                     cx={pos.x}
                     cy={pos.y}
-                    r="18"
+                    r="17"
                     fill={exp.color || '#22d3ee'}
-                    fillOpacity="0.20"
+                    fillOpacity="0.18"
                     stroke={exp.color || '#22d3ee'}
-                    strokeOpacity="0.65"
+                    strokeOpacity="0.55"
                   />
 
                   <text
                     x={pos.x}
-                    y={pos.y + 32}
+                    y={pos.y + 4}
                     textAnchor="middle"
-                    fill="#94a3b8"
-                    fontSize="7"
+                    fill="#e2e8f0"
+                    fontSize="11"
+                    fontWeight="500"
                   >
-                    {exp.title.slice(0, 12)}
+                    {i + 1}
                   </text>
                 </g>
               )
@@ -178,7 +165,7 @@ export default function Collective({ embedded = false }) {
                   animate={{
                     x: [0, 3, -2, 0],
                     y: [0, -2, 3, 0],
-                    opacity: [0.65, 1, 0.65],
+                    opacity: [0.62, 1, 0.62],
                   }}
                   transition={{
                     duration: 6 + i * 0.2,
@@ -186,28 +173,51 @@ export default function Collective({ embedded = false }) {
                     ease: 'easeInOut',
                   }}
                 >
-                  <circle
-                    cx={pos.x}
-                    cy={pos.y}
-                    r={9 + Math.min(tag.count, 5)}
-                    fill="rgba(34,211,238,0.12)"
-                    stroke="rgba(34,211,238,0.35)"
-                  />
-
                   <text
                     x={pos.x}
                     y={pos.y + 3}
                     textAnchor="middle"
-                    fill="white"
-                    fontSize="8"
+                    fill="#e0faff"
+                    fontSize={9 + Math.min(tag.count, 4)}
+                    opacity="0.95"
                   >
-                    {tag.label.slice(0, 9)}
+                    {tag.label.slice(0, 11)}
                   </text>
                 </motion.g>
               )
             })}
           </svg>
         </div>
+
+        <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mb-6">
+          <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-4">
+            Légende des paysages
+          </p>
+
+          <div className="flex flex-col gap-2">
+            {visibleExperiences.map((exp, i) => (
+              <div
+                key={exp.id}
+                className="flex items-center gap-3 text-sm text-slate-300"
+              >
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs border"
+                  style={{
+                    borderColor: exp.color || '#22d3ee',
+                    color: exp.color || '#22d3ee',
+                    background: `${exp.color || '#22d3ee'}18`,
+                  }}
+                >
+                  {i + 1}
+                </span>
+
+                <span>
+                  {exp.title}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mb-6">
           <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-4">
@@ -253,7 +263,7 @@ export default function Collective({ embedded = false }) {
 
             <p>
               Plus un mot revient, plus il devient une trace collective :
-              un passage partagé dans le corps relationnel du sonore vivant.
+              un passage partagé dans le sonore vivant.
             </p>
           </div>
         </section>

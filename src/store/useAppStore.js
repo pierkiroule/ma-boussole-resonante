@@ -39,7 +39,25 @@ export const useAppStore = create(
 
       addConnection: (connection) =>
         set((state) => ({
-          connections: [...state.connections, connection],
+          connections: [
+            ...state.connections,
+            connection,
+          ],
+        })),
+
+      removeConnection: (from, to) =>
+        set((state) => ({
+          connections: state.connections.filter((connection) => {
+            const sameDirection =
+              connection.from === from &&
+              connection.to === to
+
+            const reverseDirection =
+              connection.from === to &&
+              connection.to === from
+
+            return !sameDirection && !reverseDirection
+          }),
         })),
 
       setSynthesisTitle: (title) =>
