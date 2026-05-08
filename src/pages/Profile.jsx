@@ -6,14 +6,12 @@ import { useAppStore } from '../store/useAppStore'
 
 export default function Profile() {
   const navigate = useNavigate()
-
   const setProfile = useAppStore((s) => s.setProfile)
 
   const [pseudo, setPseudo] = useState('')
   const [ageRange, setAgeRange] = useState('')
   const [gender, setGender] = useState('')
   const [consent, setConsent] = useState(false)
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -24,24 +22,10 @@ export default function Profile() {
     consent &&
     !loading
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-
-    setError('')
-
-    if (!canSubmit) {
-      setError('Merci de compléter le profil.')
-      return
-    }
-
+  async function saveProfile(profilePayload) {
     setLoading(true)
 
-    const profile = await createProfile({
-      pseudo: pseudo.trim(),
-      age_range: ageRange,
-      gender,
-      research_consent: consent,
-    })
+    const profile = await createProfile(profilePayload)
 
     setLoading(false)
 
@@ -52,6 +36,34 @@ export default function Profile() {
 
     setProfile(profile)
     navigate('/experiences')
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+
+    if (!canSubmit) {
+      setError('Merci de compléter le profil.')
+      return
+    }
+
+    await saveProfile({
+      pseudo: pseudo.trim(),
+      age_range: ageRange,
+      gender,
+      research_consent: consent,
+    })
+  }
+
+  async function handleDevMode() {
+    setError('')
+
+    await saveProfile({
+      pseudo: `dev-${Date.now()}`,
+      age_range: '26-40',
+      gender: 'Préfère ne pas répondre',
+      research_consent: true,
+    })
   }
 
   return (
@@ -74,6 +86,15 @@ export default function Profile() {
           placeholder="Pseudo"
           className="rounded-2xl bg-slate-900 border border-white/10 p-4 outline-none"
         />
+
+        <button
+          type="button"
+          onClick={handleDevMode}
+          disabled={loading}
+          className="rounded-full p-3 bg-white/5 border border-white/10 text-slate-300 text-sm"
+        >
+          Mode dev : entrer rapidement
+        </button>
 
         <select
           value={ageRange}
