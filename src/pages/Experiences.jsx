@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react'
-import { getExperiences } from '../services/experienceService'
+import { useNavigate } from 'react-router-dom'
 
-export default function Experiences({ onSelect }) {
+import { getExperiences } from '../services/experienceService'
+import { useAppStore } from '../store/useAppStore'
+
+export default function Experiences() {
+  const navigate = useNavigate()
+
+  const setCurrentExperience = useAppStore(
+    (s) => s.setCurrentExperience
+  )
+
   const [experiences, setExperiences] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -14,6 +23,11 @@ export default function Experiences({ onSelect }) {
 
     load()
   }, [])
+
+  function handleSelect(exp) {
+    setCurrentExperience(exp)
+    navigate('/listening')
+  }
 
   if (loading) {
     return (
@@ -33,7 +47,7 @@ export default function Experiences({ onSelect }) {
         {experiences.map((exp) => (
           <button
             key={exp.id}
-            onClick={() => onSelect(exp)}
+            onClick={() => handleSelect(exp)}
             className="rounded-3xl p-6 border border-white/10 text-left"
             style={{
               background: `linear-gradient(135deg, ${exp.color}30, #111827)`
