@@ -23,8 +23,6 @@ export default function ExperiencePanel({ experience }) {
   const resetJourney = useAppStore((s) => s.resetJourney)
 
   const [firstTag, setFirstTag] = useState(null)
-  const [customTag, setCustomTag] = useState('')
-  const [customAxis, setCustomAxis] = useState('north')
 
   const allTags = Object.entries(selectedTags || {}).flatMap(
     ([axis, tags]) =>
@@ -56,21 +54,22 @@ export default function ExperiencePanel({ experience }) {
     })
   }
 
-  function addCustomTag() {
-    const tag = customTag.trim()
+  function addCustomTag(axis) {
+    const rawTag = window.prompt(
+      'Quel mot souhaitez-vous ajouter à cet axe ?'
+    )
+    const tag = rawTag?.trim()
 
     if (!tag) return
 
-    const current = selectedTags?.[customAxis] || []
+    const current = selectedTags?.[axis] || []
 
     if (!current.includes(tag)) {
       setSelectedTags({
         ...selectedTags,
-        [customAxis]: [...current, tag],
+        [axis]: [...current, tag],
       })
     }
-
-    setCustomTag('')
   }
 
   function connectTag(tag) {
@@ -207,47 +206,15 @@ export default function ExperiencePanel({ experience }) {
                     </button>
                   )
                 })}
+                <button
+                  onClick={() => addCustomTag(axis.id)}
+                  className="rounded-full px-4 py-2 border transition-all text-slate-400 border-white/20 bg-white/[0.03]"
+                >
+                  Autre
+                </button>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mt-8">
-          <h3 className="text-xl mb-4">
-            Ajouter un mot personnel
-          </h3>
-
-          <select
-            value={customAxis}
-            onChange={(e) =>
-              setCustomAxis(e.target.value)
-            }
-            className="w-full mb-4 rounded-2xl bg-black/40 border border-white/10 p-4"
-          >
-            {compassAxes.map((axis) => (
-              <option key={axis.id} value={axis.id}>
-                {axis.label}
-              </option>
-            ))}
-          </select>
-
-          <div className="flex gap-3">
-            <input
-              value={customTag}
-              onChange={(e) =>
-                setCustomTag(e.target.value)
-              }
-              placeholder="Ajouter un mot"
-              className="flex-1 rounded-2xl bg-black/40 border border-white/10 p-4"
-            />
-
-            <button
-              onClick={addCustomTag}
-              className="rounded-2xl bg-cyan-500 text-black px-5"
-            >
-              +
-            </button>
-          </div>
         </div>
       </section>
 
