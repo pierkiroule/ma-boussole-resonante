@@ -74,25 +74,51 @@ export default function ExperienceFlow() {
           </button>
 
           <div className="flex flex-1 gap-1">
-            {Array.from({ length: totalSlides }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className="flex-1 h-2 rounded-full overflow-hidden bg-white/10"
-                aria-label={`Aller à la page ${i + 1}`}
-              >
-                <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: i <= index ? '100%' : '0%',
-                    background:
-                      i === experiences.length
-                        ? '#a78bfa'
-                        : '#22d3ee',
-                  }}
-                />
-              </button>
-            ))}
+            {Array.from({ length: totalSlides }).map((_, i) => {
+              const active = i === index
+              const completed = i <= index
+              const isLast = i === experiences.length
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  className="flex-1 min-w-0"
+                  aria-label={`Aller à la page ${i + 1}`}
+                >
+                  <div
+                    className="h-7 rounded-full border flex items-center justify-center text-[10px] transition-all"
+                    style={{
+                      borderColor: active
+                        ? isLast
+                          ? '#a78bfa'
+                          : '#22d3ee'
+                        : 'rgba(255,255,255,0.10)',
+
+                      background: completed
+                        ? isLast
+                          ? 'rgba(167,139,250,0.25)'
+                          : 'rgba(34,211,238,0.20)'
+                        : 'rgba(255,255,255,0.04)',
+
+                      color: active
+                        ? '#ffffff'
+                        : completed
+                          ? '#cbd5e1'
+                          : '#64748b',
+
+                      boxShadow: active
+                        ? isLast
+                          ? '0 0 18px rgba(167,139,250,0.35)'
+                          : '0 0 18px rgba(34,211,238,0.35)'
+                        : 'none',
+                    }}
+                  >
+                    {isLast ? '∞' : i + 1}
+                  </div>
+                </button>
+              )
+            })}
           </div>
         </div>
 

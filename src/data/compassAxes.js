@@ -1,61 +1,89 @@
 export const compassAxes = [
   {
     id: 'north',
-    label: 'NORD',
-    question: 'Ce que cela m’ouvre',
+    label: 'Ouverture · Mouvement',
     color: '#4ade80',
+
+    question:
+      'Qu’est-ce qui s’est ouvert ou mis en mouvement ?',
+
     tags: [
-      'ralentir',
-      'respirer',
-      'rêver',
-      'explorer',
-      'marcher',
-      'créer',
+      'ouverture',
+      'élan',
+      'curiosité',
+      'fascination',
+      'appel',
+      'mouvement',
+      'vibration',
+      'vivant',
+      'éveil',
+      'horizon',
     ],
   },
 
   {
     id: 'south',
-    label: 'SUD',
-    question: 'Ce que cela réveille',
+    label: 'Mémoire · Intériorité',
     color: '#60a5fa',
+
+    question:
+      'Qu’est-ce qui a résonné dans la mémoire ou l’intime ?',
+
     tags: [
       'souvenir',
-      'émotion',
       'enfance',
-      'imaginaire',
       'nostalgie',
-      'sécurité',
+      'intime',
+      'trace',
+      'mémoire',
+      'rêverie',
+      'absence',
+      'présence',
+      'profondeur',
     ],
   },
 
   {
     id: 'east',
-    label: 'EST',
-    question: 'Ce à quoi je me relie',
+    label: 'Lien · Milieu vivant',
     color: '#f59e0b',
+
+    question:
+      'Comment le paysage a-t-il relié au monde vivant ?',
+
     tags: [
       'nature',
-      'silence',
-      'vivant',
-      'calme',
-      'horizon',
+      'eau',
+      'vent',
+      'oiseaux',
+      'espace',
+      'milieu',
       'monde',
+      'relation',
+      'immersion',
+      'étendue',
     ],
   },
 
   {
     id: 'west',
-    label: 'OUEST',
-    question: 'Ce que je ressens dans mon corps',
+    label: 'Corps · État sensible',
     color: '#f472b6',
+
+    question:
+      'Comment le corps et l’état sensible ont-ils évolué ?',
+
     tags: [
+      'calme',
+      'respiration',
       'détente',
-      'souffle',
       'frisson',
       'tension',
+      'apaisement',
+      'ralentissement',
       'ancrage',
-      'chaleur',
+      'sécurité',
+      'fatigue',
     ],
   },
 ]
