@@ -38,21 +38,22 @@ export default function SynthesisPreview() {
     const sameAxisTags = allTags.filter((t) => t.axis === tag.axis)
     const axisIndex = sameAxisTags.findIndex((t) => t.id === tag.id)
     const total = sameAxisTags.length
-    const spread = total <= 1 ? 0 : (axisIndex - (total - 1) / 2) * 28
+    const spread = total <= 1 ? 0 : (axisIndex - (total - 1) / 2) * 22
+    const rowOffset = total <= 1 ? 0 : ((axisIndex % 2) - 0.5) * 14
 
     if (tag.axis === 'north') {
-      return { x: CENTER + spread, y: 62 }
+      return { x: CENTER + spread, y: 62 + rowOffset }
     }
 
     if (tag.axis === 'south') {
-      return { x: CENTER + spread, y: SIZE - 54 }
+      return { x: CENTER + spread, y: SIZE - 54 + rowOffset }
     }
 
     if (tag.axis === 'east') {
-      return { x: SIZE - 58, y: CENTER + spread }
+      return { x: SIZE - 58 + rowOffset, y: CENTER + spread }
     }
 
-    return { x: 58, y: CENTER + spread }
+    return { x: 58 + rowOffset, y: CENTER + spread }
   }
 
   function findTag(label) {
@@ -62,7 +63,7 @@ export default function SynthesisPreview() {
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
       <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-5">
-        Ma boussole de synthèse
+        Ma boussole synthétique perso
       </p>
 
       {allTags.length === 0 ? (

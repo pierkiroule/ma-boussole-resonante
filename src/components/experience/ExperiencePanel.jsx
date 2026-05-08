@@ -271,7 +271,7 @@ export default function ExperiencePanel({ experience }) {
             </p>
 
             <h2 className="text-3xl font-light">
-              Ma carte de résonance
+              Ma boussole synthétique perso
             </h2>
           </div>
 
