@@ -1,0 +1,174 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { compassAxes } from '../data/compassAxes'
+
+import { useAppStore } from '../store/useAppStore'
+
+import TagBubble from '../components/compass/TagBubble'
+import CompassRose from '../components/compass/CompassRose'
+
+import {
+  createResonanceEntry,
+  saveEntryTags,
+} from '../services/resonanceService'
+
+export default function Compass() {
+  const navigate = useNavigate()
+
+  const profile = useAppStore((s) => s.profile)
+  const currentExperience = useAppStore((s) => s.currentExperience)
+  const setCurrentEntry = useAppStore((s) => s.setCurrentEntry)
+  const selectedTags = useAppStore((s) => s.selectedTags)
+  const setSelectedTags = useAppStore((s) => s.setSelectedTags)
+
+  const [currentAxis, setCurrentAxis] = useState('north')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const current = compassAxes.find((axis) => axis.id === currentAxis)
+
+  const hasTags = Object.values(selectedTags).some(
+    (tags) => tags.length > 0
+  )
+
+  function toggleTag(axis, tag) {
+    const currentTags = selectedTags[axis] || []
+    const exists = currentTags.includes(tag)
+
+    setSelectedTags({
+      ...selectedTags,
+      [axis]: exists
+        ? currentTags.filter((item) => item !== tag)
+        : [...currentTags, tag],
+    })
+  }
+
+  async function handleContinue() {
+    setError('')
+
+    if (!profile?.id || !currentExperience?.id) {
+      setError('Profil ou expérience manquante.')
+      return
+    }
+
+    if (!hasTags) {
+      setError('Choisis au moins une résonance.')
+      return
+    }
+
+    setLoading(true)
+
+    const entry = await createResonanceEntry(
+      profile.id,
+      currentExperience.id
+    )
+
+    if (!entry) {
+      setLoading(false)
+      setError('Impossible de créer l’entrée de résonance.')
+      return
+    }
+
+    const saved = await saveEntryTags(entry.id, selectedTags)
+
+    if (!saved) {
+      setLoading(false)
+      setError('Impossible de sauvegarder les tags.')
+      return
+    }
+
+    setCurrentEntry(entry)
+    setLoading(false)
+
+    navigate('/weaving')
+  }
+
+  return (
+    <main className="min-h-screen bg-black text-white p-6">
+      <p className="text-slate-500 uppercase tracking-widest text-xs mb-3">
+        Boussole de résonance
+      </p>
+
+      <h1 className="text-4xl leading-tight mb-8 font-light">
+        Où cette écoute
+        <br />
+        <span
+          className="italic"
+          style={{ color: current?.color }}
+        >
+          t’oriente-t-elle ?
+        </span>
+      </h1>
+
+      <CompassRose
+        currentAxis={currentAxis}
+        selectedTags={selectedTags}
+        onSelectAxis={setCurrentAxis}
+        axes={compassAxes}
+      />
+
+      <section className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 mb-8">
+        <p
+          className="uppercase tracking-widest text-xs mb-2"
+          style={{ color: current.color }}
+        >
+          {current.label}
+        </p>
+
+        <h2 className="text-2xl mb-5 font-light">
+          {current.question}
+        </h2>
+
+        <div className="flex flex-wrap gap-3">
+          {current.tags.map((tag) => (
+            <TagBubble
+              key={tag}
+              tag={tag}
+              color={current.color}
+              selected={selectedTags[current.id].includes(tag)}
+              onClick={() => toggleTag(current.id, tag)}
+            />
+          ))}
+        </div>
+      </section>
+
+      <div className="grid grid-cols-4 gap-2 mb-8">
+        {compassAxes.map((axis) => (
+          <button
+            key={axis.id}
+            onClick={() => setCurrentAxis(axis.id)}
+            className="rounded-2xl border border-white/10 p-3 text-xs"
+            style={{
+              color:
+                currentAxis === axis.id
+                  ? axis.color
+                  : '#64748b',
+
+              background:
+                currentAxis === axis.id
+                  ? `${axis.color}22`
+                  : 'rgba(255,255,255,0.03)',
+            }}
+          >
+            {axis.label}
+          </button>
+        ))}
+      </div>
+
+      {error && (
+        <p className="text-red-400 text-sm mb-6">
+          {error}
+        </p>
+      )}
+
+      <button
+        onClick={handleContinue}
+        disabled={loading}
+        className="w-full rounded-full bg-blue-500 p-4 disabled:bg-slate-700"
+      >
+        {loading ? 'Sauvegarde...' : 'Continuer vers le tissage'}
+      </button>
+    </main>
+  )
+}
