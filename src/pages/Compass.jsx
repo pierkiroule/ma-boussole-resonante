@@ -7,6 +7,7 @@ import { useAppStore } from '../store/useAppStore'
 
 import TagBubble from '../components/compass/TagBubble'
 import CompassRose from '../components/compass/CompassRose'
+import PageShell from '../components/layout/PageShell'
 
 import {
   createResonanceEntry,
@@ -85,7 +86,10 @@ export default function Compass() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white p-6">
+    <PageShell
+      accent={current?.color || '#3b82f6'}
+      className="text-white"
+    >
       <p className="text-slate-500 uppercase tracking-widest text-xs mb-3">
         Boussole de résonance
       </p>
@@ -169,6 +173,6 @@ export default function Compass() {
       >
         {loading ? 'Sauvegarde...' : 'Continuer vers le tissage'}
       </button>
-    </main>
+    </PageShell>
   )
 }
