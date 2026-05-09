@@ -56,7 +56,11 @@ export default function SynthesisPreview() {
     return { x: 58 + rowOffset, y: CENTER + spread }
   }
 
-  function findTag(label) {
+  function findTag(label, axis) {
+    if (axis) {
+      return allTags.find((tag) => tag.label === label && tag.axis === axis)
+    }
+
     return allTags.find((tag) => tag.label === label)
   }
 
@@ -172,8 +176,8 @@ export default function SynthesisPreview() {
             </text>
 
             {connections.map((connection, index) => {
-              const fromTag = findTag(connection.from)
-              const toTag = findTag(connection.to)
+              const fromTag = findTag(connection.from, connection.from_axis)
+              const toTag = findTag(connection.to, connection.to_axis)
 
               if (!fromTag || !toTag) return null
 
