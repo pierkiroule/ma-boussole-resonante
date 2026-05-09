@@ -15,6 +15,12 @@ const axisColors = {
   west: '#f472b6',
 }
 
+function normalizeTagLabel(raw) {
+  return String(raw || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+}
+
 export default function ExperiencePanel({ experience }) {
   const selectedTags = useAppStore((s) => s.selectedTags)
   const setSelectedTags = useAppStore((s) => s.setSelectedTags)
@@ -141,7 +147,7 @@ export default function ExperiencePanel({ experience }) {
     const rawTag = window.prompt(
       'Quel mot souhaitez-vous ajouter à cet axe ?'
     )
-    const tag = rawTag?.trim()
+    const tag = normalizeTagLabel(rawTag)
 
     if (!tag) return
 
@@ -161,7 +167,7 @@ export default function ExperiencePanel({ experience }) {
       return
     }
 
-    if (firstTag.label === tag.label) {
+    if (firstTag.label === tag.label && firstTag.axis === tag.axis) {
       setFirstTag(null)
       return
     }
@@ -169,9 +175,13 @@ export default function ExperiencePanel({ experience }) {
     const exists = connections.some((connection) => {
       return (
         (connection.from === firstTag.label &&
-          connection.to === tag.label) ||
+          connection.to === tag.label &&
+          connection.from_axis === firstTag.axis &&
+          connection.to_axis === tag.axis) ||
         (connection.from === tag.label &&
-          connection.to === firstTag.label)
+          connection.to === firstTag.label &&
+          connection.from_axis === tag.axis &&
+          connection.to_axis === firstTag.axis)
       )
     })
 
