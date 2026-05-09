@@ -1,12 +1,9 @@
 import { supabase } from './supabaseClient'
 
-export async function createResonanceEntry(profileId, experienceId) {
+export async function createResonanceEntry(payload) {
   const { data, error } = await supabase
     .from('resonance_entries')
-    .insert({
-      profile_id: profileId,
-      experience_id: experienceId,
-    })
+    .insert(payload)
     .select()
     .single()
 
@@ -18,15 +15,17 @@ export async function createResonanceEntry(profileId, experienceId) {
   return data
 }
 
-export async function saveEntryTags(entryId, selectedTags) {
+export async function saveEntryTags(entryId, tagsByAxis) {
+  if (!entryId || !tagsByAxis) return true
+
   const rows = []
 
-  Object.entries(selectedTags).forEach(([axis, tags]) => {
-    tags.forEach((tag) => {
+  Object.entries(tagsByAxis).forEach(([axis, tags]) => {
+    tags.forEach((label) => {
       rows.push({
         entry_id: entryId,
         axis,
-        label: tag,
+        label,
       })
     })
   })
@@ -45,31 +44,25 @@ export async function saveEntryTags(entryId, selectedTags) {
   return true
 }
 
-export async function updateResonanceEntry(entryId, values) {
+export async function saveEntryConnections(entryId, connections) {
+  if (!entryId || !connections?.length) return true
+
+  const rows = connections.map((connection) => ({
+    entry_id: entryId,
+    from_tag: connection.from,
+    to_tag: connection.to,
+    from_axis: connection.from_axis,
+    to_axis: connection.to_axis,
+  }))
+
   const { error } = await supabase
-    .from('resonance_entries')
-    .update(values)
-    .eq('id', entryId)
+    .from('entry_connections')
+    .insert(rows)
 
   if (error) {
-    console.error('updateResonanceEntry error:', error)
+    console.error('saveEntryConnections error:', error)
     return false
   }
 
   return true
-}
-
-export async function saveEntryConnection(connection) {
-  const { data, error } = await supabase
-    .from('entry_connections')
-    .insert(connection)
-    .select()
-    .single()
-
-  if (error) {
-    console.error('saveEntryConnection error:', error)
-    return null
-  }
-
-  return data
 }

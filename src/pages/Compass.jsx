@@ -12,6 +12,7 @@ import PageShell from '../components/layout/PageShell'
 import {
   createResonanceEntry,
   saveEntryTags,
+  saveEntryConnections,
 } from '../services/resonanceService'
 
 export default function Compass() {
@@ -21,6 +22,7 @@ export default function Compass() {
   const currentExperience = useAppStore((s) => s.currentExperience)
   const setCurrentEntry = useAppStore((s) => s.setCurrentEntry)
   const selectedTags = useAppStore((s) => s.selectedTags)
+  const connections = useAppStore((s) => s.connections)
   const setSelectedTags = useAppStore((s) => s.setSelectedTags)
 
   const [currentAxis, setCurrentAxis] = useState('north')
@@ -72,6 +74,8 @@ export default function Compass() {
     }
 
     const saved = await saveEntryTags(entry.id, selectedTags)
+
+    await saveEntryConnections(entry.id, connections)
 
     if (!saved) {
       setLoading(false)
