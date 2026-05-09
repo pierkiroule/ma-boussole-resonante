@@ -98,16 +98,15 @@ export default function Welcome() {
           </p>
 
           <h1 className="text-5xl font-thin leading-tight mb-5">
-            Ma Boussole
+            Boussole
             <br />
             <span className="italic text-cyan-300">
-              Résonante
+            des Résonances
             </span>
           </h1>
 
           <p className="text-slate-400 leading-relaxed">
-            Explorez des paysages sonores et laissez apparaître
-            les mots, liens et traces qui vous traversent.
+            Explorez des paysages sonores et notez ici les mots qui décrivent et résonnent au plus juste avec vos ressentis du moment.
           </p>
         </div>
 
@@ -120,13 +119,13 @@ export default function Welcome() {
             <p>
               <span className="text-cyan-300">↔ Glisser horizontalement</span>
               <br />
-              pour changer de paysage sonore.
+              pour découvrir les différents paysages sonores.
             </p>
 
             <p>
               <span className="text-cyan-300">↕ Scroller verticalement</span>
               <br />
-              pour explorer chaque paysage.
+              pour sélectionner et relier vos mots qui résonnent.
             </p>
 
             <ol className="list-decimal pl-5 text-slate-400">
