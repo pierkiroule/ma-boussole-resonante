@@ -68,6 +68,10 @@ export default function Collective({ embedded = false }) {
     }
 
     load()
+
+    const timer = setInterval(load, 5000)
+
+    return () => clearInterval(timer)
   }, [])
 
   const visibleExperiences = experiences.slice(0, 10)

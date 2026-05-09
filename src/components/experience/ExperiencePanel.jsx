@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAppStore } from '../../store/useAppStore'
-import { createResonanceEntry, saveEntryTags, saveEntryConnections } from '../../services/resonanceService'
+import { createResonanceEntry, replaceEntryTags, replaceEntryConnections } from '../../services/resonanceService'
 import { compassAxes } from '../../data/compassAxes'
 import SynthesisPreview from '../synthesis/SynthesisPreview'
 import WeavingBubbles from './WeavingBubbles'
@@ -35,34 +35,48 @@ export default function ExperiencePanel({ experience }) {
       }))
   )
 
-  async function saveCurrentResonance() {
-    console.log('SAVE DEBUG', {
-      profile,
-      experience,
-      selectedTags,
-      connections,
-    })
+  useEffect(() => {
+    async function createEntry() {
+      if (!profile?.id || !experience?.id) return
 
-    if (!experience) {
-      alert('Expérience manquante.')
-      return
+      setSaveStatus('Préparation de la trace...')
+
+      const entry = await createResonanceEntry({
+        profile_id: profile.id,
+        experience_id: experience.id,
+      })
+
+      if (!entry) {
+        setSaveStatus('Sauvegarde indisponible')
+        return
+      }
+
+      setEntryId(entry.id)
+      setSaveStatus('Trace prête')
     }
 
-    const entry = await createResonanceEntry({
-      profile_id: profile?.id || null,
-      experience_id: experience.id,
-    })
+    setEntryId(null)
+    createEntry()
+  }, [profile?.id, experience?.id])
 
-    if (!entry) {
-      alert('Impossible de créer la trace de résonance.')
-      return
-    }
+  useEffect(() => {
+    if (!entryId) return
 
-    await saveEntryTags(entry.id, selectedTags)
-    await saveEntryConnections(entry.id, connections)
+    const timer = setTimeout(async () => {
+      setSaveStatus('Sauvegarde...')
 
-    alert('Résonance sauvegardée.')
-  }
+      const tagsOk = await replaceEntryTags(entryId, selectedTags)
+      const linksOk = await replaceEntryConnections(entryId, connections)
+
+      if (tagsOk && linksOk) {
+        setSaveStatus('Sauvegardé')
+      } else {
+        setSaveStatus('Erreur de sauvegarde')
+      }
+    }, 700)
+
+    return () => clearTimeout(timer)
+  }, [entryId, selectedTags, connections])
 
   function openPlayer() {
     if (!experience?.external_player_url) return
@@ -274,12 +288,15 @@ export default function ExperiencePanel({ experience }) {
 
         <SynthesisPreview />
 
-        <button
-          onClick={saveCurrentResonance}
-          className="w-full mt-6 rounded-full p-5 bg-cyan-400 text-black font-semibold"
-        >
-          Sauvegarder ma résonance
-        </button>
+        <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-2">
+            Sauvegarde automatique
+          </p>
+
+          <p className="text-sm text-cyan-200">
+            {saveStatus || 'En attente...'}
+          </p>
+        </div>
       </section>
     </article>
   )
