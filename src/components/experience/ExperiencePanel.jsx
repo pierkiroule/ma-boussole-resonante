@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 
 import { useAppStore } from '../../store/useAppStore'
+import { createResonanceEntry, saveEntryTags, saveEntryConnections } from '../../services/resonanceService'
 import { compassAxes } from '../../data/compassAxes'
 import SynthesisPreview from '../synthesis/SynthesisPreview'
 import WeavingBubbles from './WeavingBubbles'
@@ -22,6 +23,7 @@ export default function ExperiencePanel({ experience }) {
   const addConnection = useAppStore((s) => s.addConnection)
 
   const resetJourney = useAppStore((s) => s.resetJourney)
+  const profile = useAppStore((s) => s.profile)
 
   const [firstTag, setFirstTag] = useState(null)
 
@@ -32,6 +34,35 @@ export default function ExperiencePanel({ experience }) {
         axis,
       }))
   )
+
+  async function saveCurrentResonance() {
+    console.log('SAVE DEBUG', {
+      profile,
+      experience,
+      selectedTags,
+      connections,
+    })
+
+    if (!experience) {
+      alert('Expérience manquante.')
+      return
+    }
+
+    const entry = await createResonanceEntry({
+      profile_id: profile?.id || null,
+      experience_id: experience.id,
+    })
+
+    if (!entry) {
+      alert('Impossible de créer la trace de résonance.')
+      return
+    }
+
+    await saveEntryTags(entry.id, selectedTags)
+    await saveEntryConnections(entry.id, connections)
+
+    alert('Résonance sauvegardée.')
+  }
 
   function openPlayer() {
     if (!experience?.external_player_url) return
@@ -242,6 +273,13 @@ export default function ExperiencePanel({ experience }) {
         </div>
 
         <SynthesisPreview />
+
+        <button
+          onClick={saveCurrentResonance}
+          className="w-full mt-6 rounded-full p-5 bg-cyan-400 text-black font-semibold"
+        >
+          Sauvegarder ma résonance
+        </button>
       </section>
     </article>
   )

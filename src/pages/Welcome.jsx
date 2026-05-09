@@ -52,8 +52,8 @@ export default function Welcome() {
 
     const profile = await createProfile({
       pseudo: `dev-${Date.now()}`,
-      age_range: null,
-      gender: null,
+      age_range: 'dev',
+      gender: 'dev',
       research_consent: true,
     })
 
@@ -65,7 +65,6 @@ export default function Welcome() {
     }
 
     setProfile(profile)
-
     navigate('/experience')
   }
 

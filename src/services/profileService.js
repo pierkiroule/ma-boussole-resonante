@@ -1,14 +1,14 @@
 import { supabase } from './supabaseClient'
 
-export async function createProfile(profile) {
+export async function createProfile(payload) {
   const { data, error } = await supabase
     .from('profiles')
-    .insert(profile)
+    .insert(payload)
     .select()
     .single()
 
   if (error) {
-    console.error(error)
+    console.error('createProfile error:', error)
     return null
   }
 
