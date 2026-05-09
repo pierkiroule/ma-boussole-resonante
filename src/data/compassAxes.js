@@ -5,7 +5,7 @@ export const compassAxes = [
     color: '#4ade80',
 
     question:
-      'Qu’est-ce qui s’est ouvert ou mis en mouvement ?',
+      'Qu’est-ce que cette écoute a mis en mouvement en vous ?',
 
     tags: [
       'ouverture',
@@ -18,6 +18,7 @@ export const compassAxes = [
       'vivant',
       'éveil',
       'horizon',
+      'NSP',
     ],
   },
 
@@ -27,7 +28,7 @@ export const compassAxes = [
     color: '#60a5fa',
 
     question:
-      'Qu’est-ce qui a résonné dans la mémoire ou l’intime ?',
+      'Quels souvenirs ou émotions personnelles cette écoute a-t-elle réveillés ?',
 
     tags: [
       'souvenir',
@@ -40,6 +41,7 @@ export const compassAxes = [
       'absence',
       'présence',
       'profondeur',
+      'NSP',
     ],
   },
 
@@ -49,7 +51,7 @@ export const compassAxes = [
     color: '#f59e0b',
 
     question:
-      'Comment le paysage a-t-il relié au monde vivant ?',
+      'Comment ce paysage sonore vous a-t-il relié au vivant autour de vous ?',
 
     tags: [
       'nature',
@@ -62,6 +64,7 @@ export const compassAxes = [
       'relation',
       'immersion',
       'étendue',
+      'NSP',
     ],
   },
 
@@ -71,7 +74,7 @@ export const compassAxes = [
     color: '#f472b6',
 
     question:
-      'Comment le corps et l’état sensible ont-ils évolué ?',
+      'Comment vous sentez-vous dans votre corps après l’écoute ?',
 
     tags: [
       'calme',
@@ -84,6 +87,7 @@ export const compassAxes = [
       'ancrage',
       'sécurité',
       'fatigue',
+      'NSP',
     ],
   },
 ]
