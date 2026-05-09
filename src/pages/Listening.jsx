@@ -105,7 +105,7 @@ export default function Listening() {
           onClick={openPlayer}
           className="w-full rounded-full p-5 bg-cyan-500/20 border border-cyan-400/30 text-cyan-200 backdrop-blur-xl mb-6 text-lg"
         >
-          Ouvrir le lecteur d’écoute
+          Ouvrir le lecteur audio
         </button>
 
         {hasOpenedPlayer && (
@@ -115,7 +115,7 @@ export default function Listening() {
             className="rounded-3xl border border-cyan-400/20 bg-cyan-500/10 p-5 text-center"
           >
             <p className="text-slate-300 mb-4 leading-relaxed">
-              Après l’écoute de{' '}
+              Après avoir écouté{' '}
               <span className="text-cyan-300">
                 {currentExperience.title}
               </span>
@@ -125,7 +125,7 @@ export default function Listening() {
               onClick={() => navigate('/compass')}
               className="w-full rounded-full p-5 bg-white text-black font-semibold text-base shadow-2xl"
             >
-              🧭 Remplir ma boussole
+              🧭 Répondre aux questions
             </button>
           </motion.div>
         )}

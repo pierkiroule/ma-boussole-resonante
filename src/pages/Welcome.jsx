@@ -25,7 +25,7 @@ export default function Welcome() {
     setError('')
 
     if (!pseudo.trim()) {
-      setError('Entre un pseudo pour commencer.')
+      setError('Indiquez un pseudo pour commencer.')
       return
     }
 
@@ -109,40 +109,40 @@ export default function Welcome() {
           </h1>
 
           <p className="text-slate-400 leading-relaxed">
-            Explorez des paysages sonores et notez ici les mots qui décrivent et résonnent au plus juste avec vos ressentis du moment.
+            Écoutez un paysage sonore, puis choisissez les mots qui décrivent le mieux ce que vous ressentez.
           </p>
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 mb-5">
           <h2 className="text-2xl font-light mb-4">
-            Comment naviguer ?
+            Comment ça marche ?
           </h2>
 
           <div className="flex flex-col gap-4 text-slate-300 leading-relaxed">
             <p>
-              <span className="text-cyan-300">↔ Glisser horizontalement</span>
+              <span className="text-cyan-300">↔ Faites glisser à gauche ou à droite</span>
               <br />
-              pour découvrir les différents paysages sonores.
+              pour découvrir les paysages sonores.
             </p>
 
             <p>
-              <span className="text-cyan-300">↕ Scroller verticalement</span>
+              <span className="text-cyan-300">↕ Faites défiler vers le bas</span>
               <br />
-              pour sélectionner et relier vos mots qui résonnent.
+              pour choisir vos mots et les relier.
             </p>
 
             <ol className="list-decimal pl-5 text-slate-400">
-              <li>écouter</li>
-              <li>choisir des tags</li>
-              <li>relier les mots</li>
-              <li>voir la synthèse vivante</li>
+              <li>Écoutez</li>
+              <li>Choisissez des mots</li>
+              <li>Reliez les mots entre eux</li>
+              <li>Découvrez votre synthèse</li>
             </ol>
           </div>
         </div>
 
         <div className="rounded-3xl border border-cyan-400/20 bg-cyan-500/10 p-5 mb-5">
           <h2 className="text-2xl font-light mb-5">
-            Entrer dans l’expérience
+            Commencer l’expérience
           </h2>
 
           <label className="block text-sm text-cyan-100 mb-2">

@@ -51,12 +51,12 @@ export default function Compass() {
     setError('')
 
     if (!profile?.id || !currentExperience?.id) {
-      setError('Profil ou expérience manquante.')
+      setError('Il manque votre profil ou l’expérience sélectionnée.')
       return
     }
 
     if (!hasTags) {
-      setError('Choisis au moins une résonance.')
+      setError('Choisissez au moins un mot qui vous parle.')
       return
     }
 
@@ -69,7 +69,7 @@ export default function Compass() {
 
     if (!entry) {
       setLoading(false)
-      setError('Impossible de créer l’entrée de résonance.')
+      setError('Nous n’avons pas pu enregistrer votre réponse pour le moment.')
       return
     }
 
@@ -79,7 +79,7 @@ export default function Compass() {
 
     if (!saved) {
       setLoading(false)
-      setError('Impossible de sauvegarder les tags.')
+      setError('Nous n’avons pas pu enregistrer les mots choisis.')
       return
     }
 
@@ -99,13 +99,13 @@ export default function Compass() {
       </p>
 
       <h1 className="text-4xl leading-tight mb-8 font-light">
-        Où cette écoute
+        Après cette écoute,
         <br />
         <span
           className="italic"
           style={{ color: current?.color }}
         >
-          t’oriente-t-elle ?
+          qu’est-ce qui résonne le plus pour vous ?
         </span>
       </h1>
 
@@ -175,7 +175,7 @@ export default function Compass() {
         disabled={loading}
         className="w-full rounded-full bg-blue-500 p-4 disabled:bg-slate-700"
       >
-        {loading ? 'Sauvegarde...' : 'Continuer vers le tissage'}
+        {loading ? 'Enregistrement...' : 'Continuer'}
       </button>
     </PageShell>
   )
