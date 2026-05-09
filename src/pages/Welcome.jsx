@@ -90,11 +90,48 @@ export default function Welcome() {
 
       <section className="relative z-10 min-h-screen max-w-md mx-auto flex flex-col justify-center">
         <div className="text-center mb-8">
-          <div className="w-28 h-28 mx-auto rounded-full border border-cyan-400/30 bg-cyan-500/10 flex items-center justify-center mb-8 shadow-2xl shadow-cyan-500/20">
-            <span className="text-5xl">
-              🧭
-            </span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, ease: 'easeOut' }}
+            className="w-32 h-32 mx-auto mb-8 relative"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0 rounded-full border border-cyan-300/30"
+            />
+
+            <motion.div
+              animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.55, 0.3] }}
+              transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute inset-3 rounded-full border border-cyan-400/40"
+            />
+
+            <div className="absolute inset-0 rounded-full bg-cyan-500/10 shadow-2xl shadow-cyan-500/30 backdrop-blur-sm" />
+
+            <motion.svg
+              viewBox="0 0 100 100"
+              className="absolute inset-0 w-full h-full"
+              animate={{ rotate: [0, 8, -8, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <line x1="50" y1="14" x2="50" y2="86" stroke="rgba(165,243,252,0.25)" strokeWidth="1.6" />
+              <line x1="14" y1="50" x2="86" y2="50" stroke="rgba(165,243,252,0.18)" strokeWidth="1.2" />
+              <polygon points="50,18 58,50 50,82 42,50" fill="rgba(34,211,238,0.9)" />
+              <polygon points="50,26 55,50 50,74 45,50" fill="rgba(207,250,254,0.95)" />
+              <circle cx="50" cy="50" r="3.4" fill="rgba(8,47,73,0.95)" />
+              <circle cx="50" cy="50" r="1.6" fill="rgba(165,243,252,0.9)" />
+            </motion.svg>
+
+            <motion.span
+              animate={{ y: [-1, -5, -1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.25em] text-cyan-200/80"
+            >
+              N
+            </motion.span>
+          </motion.div>
 
           <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
             Bienvenue
