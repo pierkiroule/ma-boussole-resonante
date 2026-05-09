@@ -1,20 +1,39 @@
 import { useEffect, useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
 
 import { getExperiences } from '../services/experienceService'
-import { getCollectiveTags } from '../services/collectiveService'
+import {
+  getCollectiveTags,
+  getCollectiveConnections,
+} from '../services/collectiveService'
+
+const axisLabels = {
+  north: 'Ouverture',
+  south: 'Mémoire',
+  east: 'Milieu',
+  west: 'Corps',
+}
+
+const axisColors = {
+  north: '#4ade80',
+  south: '#60a5fa',
+  east: '#f59e0b',
+  west: '#f472b6',
+}
 
 export default function Collective({ embedded = false }) {
   const [experiences, setExperiences] = useState([])
   const [tags, setTags] = useState([])
+  const [connections, setConnections] = useState([])
 
   useEffect(() => {
     async function load() {
       const expData = await getExperiences()
       const tagData = await getCollectiveTags()
+      const connectionData = await getCollectiveConnections()
 
       setExperiences(expData || [])
       setTags(tagData || [])
+      setConnections(connectionData || [])
     }
 
     load()
@@ -22,28 +41,51 @@ export default function Collective({ embedded = false }) {
 
   const visibleExperiences = experiences.slice(0, 10)
 
-  const tagCloud = useMemo(() => {
+  const axisByExperience = useMemo(() => {
+    const map = {}
+
+    visibleExperiences.forEach((exp) => {
+      map[exp.id] = {
+        experience: exp,
+        axes: {
+          north: 0,
+          south: 0,
+          east: 0,
+          west: 0,
+        },
+      }
+    })
+
+    tags.forEach((item) => {
+      const expId = item.resonance_entries?.experience_id
+      const axis = item.axis
+
+      if (!map[expId]) return
+      if (!map[expId].axes[axis]) map[expId].axes[axis] = 0
+
+      map[expId].axes[axis] += 1
+    })
+
+    return Object.values(map)
+  }, [visibleExperiences, tags])
+
+  const topTags = useMemo(() => {
     const map = {}
 
     tags.forEach((item) => {
-      const label = item.label
-      const exp = item.resonance_entries?.experiences
+      if (!item.label) return
 
-      if (!label || !exp) return
+      const key = item.label.toLowerCase()
 
-      if (!map[label]) {
-        map[label] = {
-          label,
+      if (!map[key]) {
+        map[key] = {
+          label: item.label,
+          axis: item.axis,
           count: 0,
-          experiences: [],
         }
       }
 
-      map[label].count += 1
-
-      if (!map[label].experiences.includes(exp.title)) {
-        map[label].experiences.push(exp.title)
-      }
+      map[key].count += 1
     })
 
     return Object.values(map)
@@ -51,30 +93,30 @@ export default function Collective({ embedded = false }) {
       .slice(0, 12)
   }, [tags])
 
-  const topTags = tagCloud.slice(0, 5)
+  const topConnections = useMemo(() => {
+    const map = {}
 
-  const center = 170
-  const radius = 125
-  const size = 340
+    connections.forEach((item) => {
+      if (!item.from_tag || !item.to_tag) return
 
-  function getExpPosition(index, total) {
-    const angle = ((Math.PI * 2) / total) * index - Math.PI / 2
+      const pair = [item.from_tag, item.to_tag].sort()
+      const key = pair.join('---')
 
-    return {
-      x: center + Math.cos(angle) * radius,
-      y: center + Math.sin(angle) * radius,
-    }
-  }
+      if (!map[key]) {
+        map[key] = {
+          from: pair[0],
+          to: pair[1],
+          count: 0,
+        }
+      }
 
-  function getWordPosition(index, total) {
-    const angle = ((Math.PI * 2) / total) * index - Math.PI / 2
-    const wordRadius = 70
+      map[key].count += 1
+    })
 
-    return {
-      x: center + Math.cos(angle) * wordRadius,
-      y: center + Math.sin(angle) * wordRadius,
-    }
-  }
+    return Object.values(map)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10)
+  }, [connections])
 
   const Wrapper = embedded ? 'section' : 'main'
 
@@ -92,152 +134,124 @@ export default function Collective({ embedded = false }) {
         </p>
 
         <h1 className="text-4xl font-light leading-tight mb-4">
-          Qu’est-ce qui a traversé
+          Boussole des
           <br />
           <span className="italic text-cyan-300">
-            nos paysages ?
+            résonances partagées
           </span>
         </h1>
 
         <p className="text-slate-400 leading-relaxed mb-8">
-          Cette carte montre les mots qui reviennent dans les traversées.
-          Elle ne mesure pas des personnes : elle laisse apparaître des courants de résonance.
+          Cette page rassemble les traces déposées après les écoutes.
+          Elle montre les axes dominants, les mots fréquents
+          et les liens qui reviennent entre les vécus.
         </p>
 
-        <div className="relative flex justify-center mb-10">
-          <svg
-            width={size}
-            height={size}
-            viewBox={`0 0 ${size} ${size}`}
-            className="overflow-visible"
-          >
-            <circle
-              cx={center}
-              cy={center}
-              r={radius}
-              fill="rgba(255,255,255,0.015)"
-              stroke="rgba(255,255,255,0.10)"
-            />
-
-            <circle
-              cx={center}
-              cy={center}
-              r="34"
-              fill="rgba(34,211,238,0.06)"
-              stroke="rgba(34,211,238,0.18)"
-            />
-
-            {visibleExperiences.map((exp, i) => {
-              const pos = getExpPosition(i, visibleExperiences.length)
-
-              return (
-                <g key={exp.id}>
-                  <circle
-                    cx={pos.x}
-                    cy={pos.y}
-                    r="17"
-                    fill={exp.color || '#22d3ee'}
-                    fillOpacity="0.18"
-                    stroke={exp.color || '#22d3ee'}
-                    strokeOpacity="0.55"
-                  />
-
-                  <text
-                    x={pos.x}
-                    y={pos.y + 4}
-                    textAnchor="middle"
-                    fill="#e2e8f0"
-                    fontSize="11"
-                    fontWeight="500"
-                  >
-                    {i + 1}
-                  </text>
-                </g>
-              )
-            })}
-
-            {tagCloud.map((tag, i) => {
-              const pos = getWordPosition(i, tagCloud.length)
-
-              return (
-                <motion.g
-                  key={tag.label}
-                  animate={{
-                    x: [0, 3, -2, 0],
-                    y: [0, -2, 3, 0],
-                    opacity: [0.62, 1, 0.62],
-                  }}
-                  transition={{
-                    duration: 6 + i * 0.2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  <text
-                    x={pos.x}
-                    y={pos.y + 3}
-                    textAnchor="middle"
-                    fill="#e0faff"
-                    fontSize={9 + Math.min(tag.count, 4)}
-                    opacity="0.95"
-                  >
-                    {tag.label.slice(0, 11)}
-                  </text>
-                </motion.g>
-              )
-            })}
-          </svg>
-        </div>
-
         <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mb-6">
-          <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-4">
-            Légende des paysages
+          <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-5">
+            Dominantes par paysage
           </p>
 
-          <div className="flex flex-col gap-2">
-            {visibleExperiences.map((exp, i) => (
-              <div
-                key={exp.id}
-                className="flex items-center gap-3 text-sm text-slate-300"
-              >
-                <span
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs border"
-                  style={{
-                    borderColor: exp.color || '#22d3ee',
-                    color: exp.color || '#22d3ee',
-                    background: `${exp.color || '#22d3ee'}18`,
-                  }}
-                >
-                  {i + 1}
-                </span>
+          <div className="flex flex-col gap-5">
+            {axisByExperience.map((item, index) => {
+              const values = Object.entries(item.axes)
+              const max = Math.max(...values.map(([, value]) => value), 1)
 
-                <span>
-                  {exp.title}
-                </span>
-              </div>
-            ))}
+              const dominant = values
+                .sort((a, b) => b[1] - a[1])
+                .filter(([, value]) => value > 0)
+                .slice(0, 2)
+
+              return (
+                <div
+                  key={item.experience.id}
+                  className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <span
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs border"
+                      style={{
+                        borderColor: item.experience.color || '#22d3ee',
+                        color: item.experience.color || '#22d3ee',
+                        background: `${item.experience.color || '#22d3ee'}18`,
+                      }}
+                    >
+                      {index + 1}
+                    </span>
+
+                    <div>
+                      <p className="text-slate-100 text-sm">
+                        {item.experience.title}
+                      </p>
+
+                      <p className="text-slate-500 text-xs">
+                        {dominant.length > 0
+                          ? `Traversé surtout par : ${dominant
+                              .map(([axis]) => axisLabels[axis])
+                              .join(' · ')}`
+                          : 'Pas encore assez de traces'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {Object.entries(item.axes).map(([axis, value]) => (
+                      <div key={axis}>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span style={{ color: axisColors[axis] }}>
+                            {axisLabels[axis]}
+                          </span>
+
+                          <span className="text-slate-500">
+                            {value}
+                          </span>
+                        </div>
+
+                        <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${(value / max) * 100}%`,
+                              background: axisColors[axis],
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </section>
 
         <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mb-6">
           <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-4">
-            Ce qui semble circuler
+            Mots les plus fréquents
           </p>
 
           {topTags.length === 0 ? (
             <p className="text-slate-500 text-sm">
-              La carte collective se formera avec les prochaines traversées.
+              Les mots partagés apparaîtront ici.
             </p>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-3">
               {topTags.map((tag) => (
                 <div
                   key={tag.label}
-                  className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-100"
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 p-3"
                 >
-                  {tag.label}
-                  <span className="text-slate-500 ml-2">
-                    ×{tag.count}
+                  <span
+                    className="text-sm"
+                    style={{
+                      color: axisColors[tag.axis] || '#e2e8f0',
+                    }}
+                  >
+                    {tag.label}
+                  </span>
+
+                  <span className="text-xs text-slate-500">
+                    {tag.count} occurrence{tag.count > 1 ? 's' : ''}
                   </span>
                 </div>
               ))}
@@ -247,37 +261,43 @@ export default function Collective({ embedded = false }) {
 
         <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 mb-6">
           <p className="uppercase tracking-[0.25em] text-xs text-slate-500 mb-4">
-            Lecture sensible
+            Mots souvent reliés
           </p>
 
-          <div className="text-slate-400 leading-relaxed text-sm flex flex-col gap-3">
-            <p>
-              Les mots les plus présents indiquent les courants qui reviennent
-              d’une traversée à l’autre.
+          {topConnections.length === 0 ? (
+            <p className="text-slate-500 text-sm">
+              Les co-occurrences apparaîtront quand des liens auront été tissés.
             </p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {topConnections.map((connection) => (
+                <div
+                  key={`${connection.from}-${connection.to}`}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 p-3"
+                >
+                  <span className="text-sm text-cyan-100">
+                    {connection.from} ↔ {connection.to}
+                  </span>
 
-            <p>
-              Ils ne disent pas seulement ce que chacun ressent. Ils montrent
-              ce qui semble voyager à travers les paysages sonores.
-            </p>
-
-            <p>
-              Plus un mot revient, plus il devient une trace collective :
-              un passage partagé dans le sonore vivant.
-            </p>
-          </div>
+                  <span className="text-xs text-slate-500">
+                    {connection.count} lien{connection.count > 1 ? 's' : ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="rounded-3xl border border-cyan-400/20 bg-cyan-500/10 p-5">
           <p className="uppercase tracking-[0.25em] text-xs text-cyan-300 mb-4">
-            À retenir
+            Lecture simple
           </p>
 
           <p className="text-cyan-50 leading-relaxed text-sm">
-            Cette synthèse n’est pas une moyenne émotionnelle.
-            C’est une météo lente des résonances :
-            elle aide à voir ce qui a traversé les paysages,
-            ce qui s’est déposé, et ce qui a commencé à faire lien.
+            Cette boussole ne cherche pas à noter les personnes.
+            Elle aide à voir ce qui revient dans les traversées :
+            les axes qui dominent, les mots qui insistent,
+            et les vécus qui semblent résonner ensemble.
           </p>
         </section>
       </section>

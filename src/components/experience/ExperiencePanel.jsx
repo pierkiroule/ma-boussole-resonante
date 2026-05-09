@@ -5,6 +5,7 @@ import { useAppStore } from '../../store/useAppStore'
 import { compassAxes } from '../../data/compassAxes'
 import SynthesisPreview from '../synthesis/SynthesisPreview'
 import WeavingBubbles from './WeavingBubbles'
+import ExperienceOrb from './ExperienceOrb'
 
 const axisColors = {
   north: '#4ade80',
@@ -115,19 +116,9 @@ export default function ExperiencePanel({ experience }) {
           1 · Écoute
         </p>
 
-        <motion.div
-          animate={{
-            scale: [1, 1.08, 1],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-          }}
-          className="w-44 h-44 rounded-full mx-auto mb-8"
-          style={{
-            background: `${experience.color || '#22d3ee'}55`,
-            boxShadow: `0 0 60px ${experience.color || '#22d3ee'}44`,
-          }}
+        <ExperienceOrb
+          title={experience.title}
+          color={experience.color || '#22d3ee'}
         />
 
         <h2 className="text-4xl font-light text-center mb-4">

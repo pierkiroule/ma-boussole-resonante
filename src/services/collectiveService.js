@@ -23,3 +23,29 @@ export async function getCollectiveTags() {
 
   return data || []
 }
+
+export async function getCollectiveConnections() {
+  const { data, error } = await supabase
+    .from('entry_connections')
+    .select(`
+      from_tag,
+      to_tag,
+      from_axis,
+      to_axis,
+      resonance_entries (
+        experience_id,
+        experiences (
+          id,
+          title,
+          color
+        )
+      )
+    `)
+
+  if (error) {
+    console.error('getCollectiveConnections error:', error)
+    return []
+  }
+
+  return data || []
+}
