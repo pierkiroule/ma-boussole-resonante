@@ -18,6 +18,7 @@ export const compassAxes = [
       'vivant',
       'éveil',
       'horizon',
+      'NSP',
     ],
   },
 
@@ -40,6 +41,7 @@ export const compassAxes = [
       'absence',
       'présence',
       'profondeur',
+      'NSP',
     ],
   },
 
@@ -62,6 +64,7 @@ export const compassAxes = [
       'relation',
       'immersion',
       'étendue',
+      'NSP',
     ],
   },
 
@@ -84,6 +87,7 @@ export const compassAxes = [
       'ancrage',
       'sécurité',
       'fatigue',
+      'NSP',
     ],
   },
 ]
