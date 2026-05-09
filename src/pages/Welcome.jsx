@@ -6,6 +6,10 @@ import { createProfile } from '../services/profileService'
 import { useAppStore } from '../store/useAppStore'
 
 export default function Welcome() {
+  if (window.location.search.includes('reset=1')) {
+    localStorage.clear()
+    window.location.href = '/'
+  }
   const navigate = useNavigate()
 
   const setProfile = useAppStore((s) => s.setProfile)

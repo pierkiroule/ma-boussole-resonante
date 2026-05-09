@@ -33,7 +33,7 @@ export default function WeavingBubbles() {
   }, [selectedTags])
 
   function getPosition(index, total) {
-    if (total === 1) {
+    if (total <= 1) {
       return {
         x: CENTER,
         y: CENTER,
@@ -74,7 +74,7 @@ export default function WeavingBubbles() {
     }
   }
 
-  function handleTagTap(tag) {
+  function handleTap(tag) {
     if (!firstTag) {
       setFirstTag(tag)
       return
@@ -172,9 +172,7 @@ export default function WeavingBubbles() {
 
             {allTags.map((tag, index) => {
               const pos = getPosition(index, allTags.length)
-
-              const selected =
-                firstTag?.label === tag.label
+              const selected = firstTag?.label === tag.label
 
               return (
                 <text
@@ -182,12 +180,13 @@ export default function WeavingBubbles() {
                   x={pos.x}
                   y={pos.y}
                   textAnchor="middle"
-                  onClick={() => handleTagTap(tag)}
+                  dominantBaseline="middle"
+                  onClick={() => handleTap(tag)}
                   className="cursor-pointer select-none"
                   fill={tag.color}
                   fontSize={selected ? 14 : 12}
                   fontWeight={selected ? 700 : 500}
-                  opacity={selected ? 1 : 0.9}
+                  opacity={selected ? 1 : 0.92}
                   style={{
                     filter: selected
                       ? `drop-shadow(0 0 10px ${tag.color})`

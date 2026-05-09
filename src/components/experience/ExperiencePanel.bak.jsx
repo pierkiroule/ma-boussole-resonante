@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useAppStore } from '../../store/useAppStore'
-import { createResonanceEntry, replaceEntryTags, replaceEntryConnections } from '../../services/resonanceService'
+import { createResonanceEntry, saveEntryTags, saveEntryConnections } from '../../services/resonanceService'
 import { compassAxes } from '../../data/compassAxes'
 import SynthesisPreview from '../synthesis/SynthesisPreview'
 import WeavingBubbles from './WeavingBubbles'
@@ -26,8 +26,6 @@ export default function ExperiencePanel({ experience }) {
   const profile = useAppStore((s) => s.profile)
 
   const [firstTag, setFirstTag] = useState(null)
-  const [entryId, setEntryId] = useState(null)
-  const [saveStatus, setSaveStatus] = useState('')
 
   const allTags = Object.entries(selectedTags || {}).flatMap(
     ([axis, tags]) =>
@@ -64,56 +62,6 @@ export default function ExperiencePanel({ experience }) {
       setSaveStatus('Sauvegarde partielle')
     }
   }
-
-  // RESET ON EXPERIENCE CHANGE
-  useEffect(() => {
-    resetJourney()
-  }, [experience?.id])
-
-  // AUTO SAVE ENTRY
-  useEffect(() => {
-    async function initEntry() {
-      if (!experience?.id) return
-
-      setEntryId(null)
-      setSaveStatus('Préparation...')
-
-      const entry = await createResonanceEntry({
-        profile_id: profile?.id || null,
-        experience_id: experience.id,
-      })
-
-      if (!entry) {
-        setSaveStatus('Sauvegarde indisponible')
-        return
-      }
-
-      setEntryId(entry.id)
-      setSaveStatus('Trace prête')
-    }
-
-    initEntry()
-  }, [experience?.id, profile?.id])
-
-  // AUTO SAVE TAGS + LIENS
-  useEffect(() => {
-    if (!entryId) return
-
-    const timer = setTimeout(async () => {
-      setSaveStatus('Sauvegarde...')
-
-      const tagsOk = await replaceEntryTags(entryId, selectedTags)
-      const linksOk = await replaceEntryConnections(entryId, connections)
-
-      if (tagsOk && linksOk) {
-        setSaveStatus('Sauvegardé')
-      } else {
-        setSaveStatus('Erreur sauvegarde')
-      }
-    }, 600)
-
-    return () => clearTimeout(timer)
-  }, [entryId, selectedTags, connections])
 
   function openPlayer() {
     if (!experience?.external_player_url) return
@@ -325,19 +273,18 @@ export default function ExperiencePanel({ experience }) {
 
         <SynthesisPreview />
 
-        <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-2">
-            Sauvegarde automatique
+        <button
+          onClick={saveCurrentResonance}
+          className="w-full mt-6 rounded-full p-5 bg-cyan-400 text-black font-semibold"
+        >
+          Sauvegarder ma résonance
+        </button>
+
+        {saveStatus && (
+          <p className="text-center text-sm text-cyan-200 mt-3">
+            {saveStatus}
           </p>
-
-          <p className="text-sm text-cyan-200">
-            {saveStatus || 'En attente...'}
-          </p>
-        </div>
-
-
-
-        
+        )}
       </section>
     </article>
   )

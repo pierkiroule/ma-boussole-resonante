@@ -1,89 +1,53 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+const emptyTags = {
+  north: [],
+  south: [],
+  east: [],
+  west: [],
+}
+
 export const useAppStore = create(
   persist(
     (set) => ({
       profile: null,
-      currentExperience: null,
-      currentSession: null,
-      currentEntry: null,
-
-      selectedTags: {
-        north: [],
-        south: [],
-        east: [],
-        west: [],
-      },
-
+      selectedTags: emptyTags,
       connections: [],
-
-      synthesisTitle: '',
-      weather: '',
-      comment: '',
 
       setProfile: (profile) =>
         set({ profile }),
 
-      setCurrentExperience: (experience) =>
-        set({ currentExperience: experience }),
-
-      setCurrentSession: (session) =>
-        set({ currentSession: session }),
-
-      setCurrentEntry: (entry) =>
-        set({ currentEntry: entry }),
-
-      setSelectedTags: (tags) =>
-        set({ selectedTags: tags }),
+      setSelectedTags: (selectedTags) =>
+        set({ selectedTags }),
 
       addConnection: (connection) =>
         set((state) => ({
           connections: [
-            ...state.connections,
+            ...(state.connections || []),
             connection,
           ],
         })),
 
       removeConnection: (from, to) =>
         set((state) => ({
-          connections: state.connections.filter((connection) => {
-            const sameDirection =
+          connections: (state.connections || []).filter((connection) => {
+            const same =
               connection.from === from &&
               connection.to === to
 
-            const reverseDirection =
+            const reverse =
               connection.from === to &&
               connection.to === from
 
-            return !sameDirection && !reverseDirection
+            return !same && !reverse
           }),
         })),
 
-      setSynthesisTitle: (title) =>
-        set({ synthesisTitle: title }),
-
-      setWeather: (weather) =>
-        set({ weather }),
-
-      setComment: (comment) =>
-        set({ comment }),
-
       resetJourney: () =>
         set({
-          currentExperience: null,
-          currentSession: null,
-          currentEntry: null,
-          selectedTags: {
-            north: [],
-            south: [],
-            east: [],
-            west: [],
-          },
+          selectedTags: emptyTags,
           connections: [],
-          synthesisTitle: '',
-          weather: '',
-          comment: '',
         }),
     }),
     {

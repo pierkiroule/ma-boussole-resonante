@@ -88,3 +88,7 @@ export async function replaceEntryConnections(entryId, connections) {
 
   return true
 }
+
+// Compat anciennes pages
+export const saveEntryTags = replaceEntryTags
+export const saveEntryConnections = replaceEntryConnections
