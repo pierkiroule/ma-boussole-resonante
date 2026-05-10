@@ -4,6 +4,15 @@ import { motion } from 'framer-motion'
 
 import { createProfile } from '../services/profileService'
 import { useAppStore } from '../store/useAppStore'
+import { compassAxes } from '../data/compassAxes'
+
+
+const axisPositions = {
+  north: 'top-[-2.4rem] left-1/2 -translate-x-1/2',
+  south: 'bottom-[-2.4rem] left-1/2 -translate-x-1/2',
+  east: 'right-[-3.8rem] top-1/2 -translate-y-1/2 text-left',
+  west: 'left-[-3.8rem] top-1/2 -translate-y-1/2 text-right',
+}
 
 export default function Welcome() {
   if (window.location.search.includes('reset=1')) {
@@ -131,6 +140,28 @@ export default function Welcome() {
             >
               N
             </motion.span>
+
+            {compassAxes.map((axis, index) => (
+              <motion.div
+                key={axis.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: [0.6, 1, 0.6], scale: [0.98, 1, 0.98] }}
+                transition={{
+                  duration: 3.8,
+                  repeat: Infinity,
+                  delay: index * 0.3,
+                  ease: 'easeInOut',
+                }}
+                className={`absolute ${axisPositions[axis.id]} w-24 pointer-events-none`}
+              >
+                <p
+                  className="text-[10px] font-light uppercase tracking-[0.07em]"
+                  style={{ color: `${axis.color}CC` }}
+                >
+                  {axis.label}
+                </p>
+              </motion.div>
+            ))}
           </motion.div>
 
           <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
