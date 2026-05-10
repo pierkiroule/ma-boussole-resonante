@@ -4,16 +4,6 @@ import { motion } from 'framer-motion'
 
 import { createProfile } from '../services/profileService'
 import { useAppStore } from '../store/useAppStore'
-import { compassAxes } from '../data/compassAxes'
-
-
-const axisPositions = {
-  north: 'top-[-2.4rem] left-1/2 -translate-x-1/2',
-  south: 'bottom-[-2.4rem] left-1/2 -translate-x-1/2',
-  east: 'right-[-3.8rem] top-1/2 -translate-y-1/2 text-left',
-  west: 'left-[-3.8rem] top-1/2 -translate-y-1/2 text-right',
-}
-
 export default function Welcome() {
   if (window.location.search.includes('reset=1')) {
     localStorage.clear()
@@ -133,35 +123,10 @@ export default function Welcome() {
               <circle cx="50" cy="50" r="1.6" fill="rgba(165,243,252,0.9)" />
             </motion.svg>
 
-            <motion.span
-              animate={{ y: [-1, -5, -1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.25em] text-cyan-200/80"
-            >
-              N
-            </motion.span>
-
-            {compassAxes.map((axis, index) => (
-              <motion.div
-                key={axis.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: [0.6, 1, 0.6], scale: [0.98, 1, 0.98] }}
-                transition={{
-                  duration: 3.8,
-                  repeat: Infinity,
-                  delay: index * 0.3,
-                  ease: 'easeInOut',
-                }}
-                className={`absolute ${axisPositions[axis.id]} w-24 pointer-events-none`}
-              >
-                <p
-                  className="text-[10px] font-light uppercase tracking-[0.07em]"
-                  style={{ color: `${axis.color}CC` }}
-                >
-                  {axis.label}
-                </p>
-              </motion.div>
-            ))}
+            <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs tracking-[0.3em] text-cyan-200/70">N</span>
+            <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs tracking-[0.3em] text-cyan-200/60">S</span>
+            <span className="absolute top-1/2 -translate-y-1/2 -right-7 text-xs tracking-[0.3em] text-cyan-200/65">E</span>
+            <span className="absolute top-1/2 -translate-y-1/2 -left-7 text-xs tracking-[0.3em] text-cyan-200/65">O</span>
           </motion.div>
 
           <p className="uppercase tracking-[0.3em] text-xs text-slate-500 mb-3">
